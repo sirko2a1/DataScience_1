@@ -20,7 +20,29 @@ print(f'Третє завдання: \n{df_3task}')
 print(f'Четверте завдання: \n{df.dtypes}')
 
 #5 ппц
-non_numeric_cols = df.columns[~df.applymap(lambda x: isinstance(x, (int, float))).all()]
+non_numeric_cols = df.columns[~df.map(lambda x: isinstance(x, (int, float))).all()]
 df_5task = df.copy()
 df_5task[non_numeric_cols] = df_5task[non_numeric_cols].apply(pd.to_numeric, errors='coerce')
 print(f"П'яте завдання: \n{df_5task}")
+
+#6 Обчислення частки пропусків у кожному стовпці
+df_6task = df.isnull().sum() / len(df) * 100
+print(f'Частка пропусків у кожному стовпці: \n{df_6task}')
+
+#7 видалення рядка
+df_7task = df.drop(27)
+print(f'Таблиця без рядка "Україна": \n{df_7task}')
+
+#8 замінення середнім заначенням 
+df_numeric = df.apply(pd.to_numeric, errors='coerce')
+df_filled = df_numeric.fillna(df_numeric.mean())
+df_surgeon1 = df_filled.drop(df.columns[0], axis=1)
+df_surgeon2 = df.pop(df.columns[0])
+df_surgeon1.insert(0, 'Регіон', df_surgeon2)
+print(f'Замінити пусті значення на середнє значення: \n {df_surgeon1}')
+
+#9 операції з останнім стовпчиком 
+last_column_index = len(df.columns) - 1
+regions_above_last_year = df[df.iloc[:, last_column_index] > df.iloc[:, last_column_index].mean()]['Регіон']
+print("Регіони з рівнем народжуваності у 2019 році вищим за середній рівень:")
+print(regions_above_last_year)
